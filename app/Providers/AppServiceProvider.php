@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Set default redirect path after login
+        \Illuminate\Support\Facades\Redirect::macro('intended', function ($default = '/dashboard') {
+            return redirect()->intended($default);
+        });
     }
 }
