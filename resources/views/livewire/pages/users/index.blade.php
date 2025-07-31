@@ -64,8 +64,17 @@ new class extends Component {
                   ->orWhere('email', 'like', '%' . $this->search . '%');
         }
 
+        // Global statistics (not affected by pagination or search)
+        $globalStats = [
+            'totalUsers' => User::count(),
+            'activeUsers' => User::where('status', 'active')->count(),
+            'inactiveUsers' => User::where('status', 'inactive')->count(),
+            'usersWithRoles' => User::has('roles')->count(),
+        ];
+
         return [
-            'users' => $query->with(['roles'])->withCount('roles')->orderBy('name')->paginate(10)
+            'users' => $query->with(['roles'])->withCount('roles')->orderBy('name')->paginate(10),
+            'stats' => $globalStats
         ];
     }
 }; ?>
@@ -138,8 +147,11 @@ new class extends Component {
                 class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ __('Total Users') }}</p>
-                        <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">{{ $users->total() }}</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400 truncate">{{ __('Total Users') }}
+                        </p>
+                        <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2 truncate">{{
+                            $stats['totalUsers'] }}
+                        </p>
                     </div>
                     <div
                         class="h-12 w-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
@@ -156,9 +168,10 @@ new class extends Component {
                 class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ __('Active Users') }}</p>
-                        <p class="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mt-2">{{
-                            $users->where('status', 'active')->count() }}</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400 truncate">{{ __('Active Users')
+                            }}</p>
+                        <p class="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mt-2 truncate">{{
+                            $stats['activeUsers'] }}</p>
                     </div>
                     <div
                         class="h-12 w-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
@@ -175,9 +188,10 @@ new class extends Component {
                 class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ __('Inactive Users') }}</p>
-                        <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-2">{{
-                            $users->where('status', 'inactive')->count() }}</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400 truncate">{{ __('Inactive Users')
+                            }}</p>
+                        <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-2 truncate">{{
+                            $stats['inactiveUsers'] }}</p>
                     </div>
                     <div
                         class="h-12 w-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center">
@@ -194,9 +208,10 @@ new class extends Component {
                 class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ __('Users with Roles') }}</p>
-                        <p class="text-3xl font-bold text-purple-600 dark:text-purple-400 mt-2">{{
-                            $users->where('roles_count', '>', 0)->count() }}</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400 truncate">{{ __('Users with
+                            Roles') }}</p>
+                        <p class="text-3xl font-bold text-purple-600 dark:text-purple-400 mt-2 truncate">{{
+                            $stats['usersWithRoles'] }}</p>
                     </div>
                     <div
                         class="h-12 w-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
@@ -221,7 +236,7 @@ new class extends Component {
                 </div>
                 <input wire:model.live="search" type="text"
                     class="block w-full pl-12 pr-4 py-3 border-0 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none shadow-lg"
-                    placeholder="{{ __('Search users...') }}">
+                    placeholder="{{ __('Search users...') }}" title="{{ __('Search users...') }}">
             </div>
         </div>
 
@@ -233,19 +248,21 @@ new class extends Component {
                 <!-- User Header -->
                 <div class="p-6 border-b border-gray-100 dark:border-gray-700">
                     <div class="flex items-start justify-between">
-                        <div class="flex items-center space-x-3">
+                        <div class="flex items-center space-x-3 min-w-0 flex-1">
                             <div
-                                class="h-12 w-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
+                                class="h-12 w-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
                                 <span class="text-lg font-semibold text-white">
                                     {{ strtoupper(substr($user->name, 0, 1)) }}
                                 </span>
                             </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $user->name }}</h3>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ $user->email }}</p>
+                            <div class="min-w-0 flex-1">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate">{{ $user->name
+                                    }}</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 truncate" title="{{ $user->email }}">
+                                    {{ $user->email }}</p>
                             </div>
                         </div>
-                        <div class="flex items-center space-x-2">
+                        <div class="flex items-center space-x-2 flex-shrink-0 ml-3">
                             <a href="{{ route('user.edit', $user->id) }}"
                                 class="p-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
                                 wire:navigate title="{{ __('Edit User') }}">
@@ -283,9 +300,10 @@ new class extends Component {
                 <div class="p-6">
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div class="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ $user->roles_count }}
+                            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400 truncate">{{
+                                $user->roles_count }}</div>
+                            <div class="text-xs text-blue-600 dark:text-blue-400 font-medium truncate">{{ __('Roles') }}
                             </div>
-                            <div class="text-xs text-blue-600 dark:text-blue-400 font-medium">{{ __('Roles') }}</div>
                         </div>
                         <div
                             class="text-center p-3 {{ $user->status === 'active' ? 'bg-green-50 dark:bg-green-900/20' : 'bg-yellow-50 dark:bg-yellow-900/20' }} rounded-xl">
@@ -305,7 +323,7 @@ new class extends Component {
                                 @endif
                             </div>
                             <div
-                                class="text-xs {{ $user->status === 'active' ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400' }} font-medium">
+                                class="text-xs {{ $user->status === 'active' ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400' }} font-medium truncate">
                                 {{ $user->status === 'active' ? __('Active') : __('Inactive') }}
                             </div>
                         </div>
@@ -315,11 +333,12 @@ new class extends Component {
                     @if($user->roles_count > 0)
                     <div class="mb-4">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Roles') }}</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">{{ __('Roles')
+                                }}</span>
                             @if($user->roles_count > 3)
                             <button type="button" wire:click="toggleRoles({{ $user->id }})"
                                 class="inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 px-2 py-1 rounded-lg transition-all duration-200">
-                                <span class="text-xs font-medium">
+                                <span class="text-xs font-medium truncate">
                                     {{ in_array($user->id, $expandedRoles) ? __('Hide') : __('Show All') }}
                                 </span>
                                 <svg class="h-3 w-3 transition-transform duration-200 {{ in_array($user->id, $expandedRoles) ? 'rotate-180' : '' }}"
@@ -335,8 +354,8 @@ new class extends Component {
                         <div class="flex flex-wrap gap-1 mb-2">
                             @foreach($user->roles->take(3) as $role)
                             <span
-                                class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600">
-                                {{ $role->name }}
+                                class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 max-w-full">
+                                <span class="truncate" title="{{ $role->name }}">{{ $role->name }}</span>
                             </span>
                             @endforeach
                             @if($user->roles_count > 3)
@@ -358,14 +377,14 @@ new class extends Component {
                                         d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
                                     </path>
                                 </svg>
-                                <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ __('All Roles')
-                                    }}</span>
+                                <span class="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">{{ __('All
+                                    Roles') }}</span>
                             </div>
                             <div class="flex flex-wrap gap-1">
                                 @foreach($user->roles as $role)
                                 <span
-                                    class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800">
-                                    {{ $role->name }}
+                                    class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800 max-w-full">
+                                    <span class="truncate" title="{{ $role->name }}">{{ $role->name }}</span>
                                 </span>
                                 @endforeach
                             </div>
@@ -381,7 +400,7 @@ new class extends Component {
                                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z">
                                 </path>
                             </svg>
-                            <span class="text-xs font-medium text-gray-600 dark:text-gray-400">{{ __('No roles
+                            <span class="text-xs font-medium text-gray-600 dark:text-gray-400 truncate">{{ __('No roles
                                 assigned') }}</span>
                         </div>
                     </div>
@@ -389,8 +408,8 @@ new class extends Component {
 
                     <!-- Created Date -->
                     <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ __('Joined') }}</span>
-                        <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{{
+                        <span class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ __('Joined') }}</span>
+                        <span class="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">{{
                             $user->created_at->format('M d, Y') }}</span>
                     </div>
                 </div>
@@ -406,8 +425,10 @@ new class extends Component {
                             </path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ __('No users found') }}</h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-6">{{ __('Get started by creating a new user.') }}</p>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 truncate">{{ __('No users
+                        found') }}</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 truncate">{{ __('Get started by creating a new
+                        user.') }}</p>
                     <a href="{{ route('user.create') }}"
                         class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                         wire:navigate>
@@ -415,7 +436,7 @@ new class extends Component {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
                             </path>
                         </svg>
-                        {{ __('Create User') }}
+                        <span class="truncate">{{ __('Create User') }}</span>
                     </a>
                 </div>
             </div>
