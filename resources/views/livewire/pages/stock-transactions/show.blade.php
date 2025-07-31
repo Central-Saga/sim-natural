@@ -14,6 +14,35 @@ new class extends Component {
         $this->transaction = StockTransaction::with(['product.category', 'user'])->findOrFail($id);
     }
 
+    public function deleteTransaction()
+    {
+        try {
+            DB::transaction(function () {
+                $product = $this->transaction->product;
+
+                // Revert the effect of the transaction if it was completed
+                if ($this->transaction->status === 'completed') {
+                    $revertedStock = match($this->transaction->type) {
+                        'in' => $product->stock_quantity - $this->transaction->quantity,
+                        'out' => $product->stock_quantity + $this->transaction->quantity,
+                        'adjustment' => $this->transaction->quantity_before,
+                        default => $product->stock_quantity,
+                    };
+                    $product->update(['stock_quantity' => max(0, $revertedStock)]);
+                }
+
+                // Delete the transaction
+                $this->transaction->delete();
+            });
+
+            session()->flash('success', __('Transaction deleted successfully.'));
+            return $this->redirect(route('stock-transaction.index'));
+
+        } catch (\Exception $e) {
+            session()->flash('error', __('Failed to delete transaction.') . ' ' . $e->getMessage());
+        }
+    }
+
     public function with(): array
     {
         return [
@@ -45,6 +74,16 @@ new class extends Component {
                     </svg>
                     {{ __('Edit Transaction') }}
                 </a>
+                <button wire:click="deleteTransaction"
+                    wire:confirm="{{ __('Are you sure you want to delete this transaction?') }}"
+                    class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
+                    </svg>
+                    {{ __('Delete Transaction') }}
+                </button>
                 <a href="{{ route('stock-transaction.index') }}"
                     class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                     wire:navigate>
@@ -109,10 +148,10 @@ new class extends Component {
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ __('Product Code') }}
+                                {{ __('Product ID') }}
                             </label>
                             <p class="mt-1 text-sm text-gray-900 dark:text-white">
-                                {{ $transaction->product->code ?? __('N/A') }}
+                                #{{ $transaction->product->id }}
                             </p>
                         </div>
                         <div>

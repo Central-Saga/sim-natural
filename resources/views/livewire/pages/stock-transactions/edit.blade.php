@@ -77,40 +77,56 @@ new class extends Component {
         $this->validate();
 
         try {
-            $service = new StockTransactionService();
-
-            // Calculate new quantity after based on type
-            $quantityAfter = match($this->newType) {
-                'in' => $this->currentStock + $this->newQuantity,
-                'out' => max(0, $this->currentStock - $this->newQuantity),
-                'adjustment' => $this->newStockAmount,
-                default => $this->currentStock,
-            };
-
-            // Update transaction
-            $this->transaction->update([
-                'product_id' => $this->newProductId,
-                'type' => $this->newType,
-                'quantity' => $this->newQuantity,
-                'quantity_before' => $this->currentStock,
-                'quantity_after' => $quantityAfter,
-                'status' => $this->newStatus,
-                'notes' => $this->newNotes,
-            ]);
-
-            // Update product stock if status is completed
-            if ($this->newStatus === 'completed') {
+            DB::transaction(function () {
                 $product = Product::find($this->newProductId);
-                if ($product) {
-                    $product->update(['stock_quantity' => $quantityAfter]);
+                if (!$product) {
+                    throw new \Exception('Product not found');
                 }
-            }
+
+                // Get current product stock (excluding this transaction)
+                $currentProductStock = $product->stock_quantity;
+
+                // Revert the effect of the original transaction if it was completed
+                if ($this->transaction->status === 'completed') {
+                    $revertedStock = match($this->transaction->type) {
+                        'in' => $currentProductStock - $this->transaction->quantity,
+                        'out' => $currentProductStock + $this->transaction->quantity,
+                        'adjustment' => $this->transaction->quantity_before,
+                        default => $currentProductStock,
+                    };
+                    $product->update(['stock_quantity' => max(0, $revertedStock)]);
+                }
+
+                // Calculate new quantity after based on new type and quantity
+                $newQuantityAfter = match($this->newType) {
+                    'in' => $product->stock_quantity + $this->newQuantity,
+                    'out' => max(0, $product->stock_quantity - $this->newQuantity),
+                    'adjustment' => $this->newQuantity, // For adjustment, quantity is the new amount
+                    default => $product->stock_quantity,
+                };
+
+                // Update transaction
+                $this->transaction->update([
+                    'product_id' => $this->newProductId,
+                    'type' => $this->newType,
+                    'quantity' => $this->newType === 'adjustment' ? $this->newQuantity : $this->newQuantity,
+                    'quantity_before' => $product->stock_quantity,
+                    'quantity_after' => $newQuantityAfter,
+                    'status' => $this->newStatus,
+                    'notes' => $this->newNotes,
+                ]);
+
+                // Update product stock if status is completed
+                if ($this->newStatus === 'completed') {
+                    $product->update(['stock_quantity' => $newQuantityAfter]);
+                }
+            });
 
             session()->flash('success', __('Stock transaction updated successfully.'));
             return $this->redirect(route('stock-transaction.index'));
 
         } catch (\Exception $e) {
-            session()->flash('error', __('Failed to update stock transaction.'));
+            session()->flash('error', __('Failed to update stock transaction.') . ' ' . $e->getMessage());
         }
     }
 

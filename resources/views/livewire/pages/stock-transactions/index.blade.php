@@ -78,6 +78,36 @@ new class extends Component {
         $this->resetPage();
     }
 
+    public function deleteTransaction($id)
+    {
+        try {
+            $transaction = StockTransaction::findOrFail($id);
+
+            DB::transaction(function () use ($transaction) {
+                $product = $transaction->product;
+
+                // Revert the effect of the transaction if it was completed
+                if ($transaction->status === 'completed') {
+                    $revertedStock = match($transaction->type) {
+                        'in' => $product->stock_quantity - $transaction->quantity,
+                        'out' => $product->stock_quantity + $transaction->quantity,
+                        'adjustment' => $transaction->quantity_before,
+                        default => $product->stock_quantity,
+                    };
+                    $product->update(['stock_quantity' => max(0, $revertedStock)]);
+                }
+
+                // Delete the transaction
+                $transaction->delete();
+            });
+
+            session()->flash('success', __('Transaction deleted successfully.'));
+
+        } catch (\Exception $e) {
+            session()->flash('error', __('Failed to delete transaction.') . ' ' . $e->getMessage());
+        }
+    }
+
     public function with(): array
     {
         $stockTransactionService = new StockTransactionService();
@@ -385,6 +415,16 @@ new class extends Component {
                                             </path>
                                         </svg>
                                     </a>
+                                    <button wire:click="deleteTransaction({{ $transaction->id }})"
+                                        wire:confirm="{{ __('Are you sure you want to delete this transaction?') }}"
+                                        class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                        title="{{ __('Delete Transaction') }}">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                            </path>
+                                        </svg>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
