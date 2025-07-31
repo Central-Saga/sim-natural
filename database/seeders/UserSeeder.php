@@ -16,18 +16,21 @@ class UserSeeder extends Seeder
         $admin = User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@example.com',
+            'status' => 'active',
         ]);
         $admin->assignRole('Admin');
 
         $akuntan = User::factory()->create([
             'name' => 'Akuntan',
             'email' => 'akuntan@example.com',
+            'status' => 'active',
         ]);
         $akuntan->assignRole('Akuntan');
 
         $karyawanGudang = User::factory()->create([
             'name' => 'Karyawan Gudang',
             'email' => 'karyawan@example.com',
+            'status' => 'active',
         ]);
         $karyawanGudang->assignRole('Karyawan Gudang');
 
