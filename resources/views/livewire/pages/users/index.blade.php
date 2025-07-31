@@ -156,9 +156,9 @@ new class extends Component {
                 class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ __('Verified Users') }}</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ __('Active Users') }}</p>
                         <p class="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mt-2">{{
-                            $users->where('email_verified_at', '!=', null)->count() }}</p>
+                            $users->where('status', 'active')->count() }}</p>
                     </div>
                     <div
                         class="h-12 w-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
@@ -175,15 +175,15 @@ new class extends Component {
                 class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ __('Pending Users') }}</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ __('Inactive Users') }}</p>
                         <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-2">{{
-                            $users->where('email_verified_at', null)->count() }}</p>
+                            $users->where('status', 'inactive')->count() }}</p>
                     </div>
                     <div
                         class="h-12 w-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center">
                         <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
                         </svg>
                     </div>
                 </div>
