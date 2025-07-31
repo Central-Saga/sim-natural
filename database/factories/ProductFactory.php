@@ -17,12 +17,44 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $productNames = [
+            // Bahan Baku
+            'Kertas Coklat',
+            'Kertas Karton',
+            'Kain Kaca',
+            'Plat Kayu',
+            'Sisitan Bambu',
+            'Lem Kayu',
+            'Tali Rafia',
+            'Paku Kayu',
+            'Bambu Betung',
+            'Kayu Jati',
+            'Kayu Mahoni',
+            'Kertas Kraft',
+
+            // Produk Jadi
+            'Pot Lontar',
+            'Pot Karung',
+            'Amy Bambu',
+            'AH Kayu',
+            'Bh Banana',
+            'KDB',
+            'KDK',
+            'Kukusan',
+            'Tas Anyaman',
+            'Topi Bambu',
+            'Keranjang',
+            'Tempat Sampah',
+            'Rak Bambu',
+            'Meja Kayu',
+        ];
+
         return [
-            'name' => $this->faker->words(3, true),
+            'name' => $this->faker->randomElement($productNames) . ' ' . $this->faker->randomElement(['Premium', 'Standard', 'Quality', 'Export']),
             'foto_produk' => $this->faker->imageUrl(640, 480, 'products', true),
             'kategori_id' => Category::inRandomOrder()->first()?->id ?? Category::factory(),
             'status' => $this->faker->randomElement(['active', 'inactive']),
-            'stock_quantity' => $this->faker->numberBetween(0, 100),
+            'stock_quantity' => $this->faker->numberBetween(0, 1000),
         ];
     }
 
@@ -52,7 +84,7 @@ class ProductFactory extends Factory
     public function inStock(): static
     {
         return $this->state(fn(array $attributes) => [
-            'stock_quantity' => $this->faker->numberBetween(1, 100),
+            'stock_quantity' => $this->faker->numberBetween(1, 1000),
         ]);
     }
 

@@ -17,16 +17,16 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         $categories = [
-            'Elektronik' => 'Produk elektronik dan gadget',
-            'Fashion' => 'Pakaian dan aksesoris fashion',
-            'Makanan & Minuman' => 'Produk makanan dan minuman',
-            'Kesehatan & Kecantikan' => 'Produk kesehatan dan kecantikan',
-            'Rumah Tangga' => 'Peralatan dan kebutuhan rumah tangga',
-            'Olahraga' => 'Peralatan dan pakaian olahraga',
-            'Buku & Alat Tulis' => 'Buku dan perlengkapan alat tulis',
-            'Otomotif' => 'Suku cadang dan aksesoris kendaraan',
-            'Mainan & Hobi' => 'Mainan dan produk hobi',
-            'Pertanian' => 'Produk pertanian dan perkebunan',
+            'Bahan Baku Kertas' => 'Bahan baku kertas seperti kertas coklat, kertas karton, dan sejenisnya',
+            'Bahan Baku Tekstil' => 'Bahan baku tekstil seperti kain kaca dan sejenisnya',
+            'Bahan Baku Kayu' => 'Bahan baku kayu seperti plat kayu dan sejenisnya',
+            'Bahan Baku Bambu' => 'Bahan baku bambu seperti sisitan bambu dan sejenisnya',
+            'Bahan Baku Perekat' => 'Bahan baku perekat seperti lem dan sejenisnya',
+            'Produk Jadi Pot' => 'Produk jadi berupa pot seperti Pot lontar, Pot karung, dan sejenisnya',
+            'Produk Jadi Kerajinan' => 'Produk jadi kerajinan seperti Amy, AH, Bh banana, dan sejenisnya',
+            'Produk Jadi Dapur' => 'Produk jadi untuk dapur seperti KDB, KDK, Kukusan, dan sejenisnya',
+            'Bahan Baku Lainnya' => 'Bahan baku lainnya yang belum dikategorikan',
+            'Produk Jadi Lainnya' => 'Produk jadi lainnya yang belum dikategorikan',
         ];
 
         $category = $this->faker->unique()->randomElement(array_keys($categories));
