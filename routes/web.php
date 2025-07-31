@@ -10,7 +10,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
+Volt::route('dashboard', 'pages.dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
@@ -50,7 +50,17 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('/create', 'pages.stock-transactions.create')->name('stock-transaction.create');
         Volt::route('/{id}', 'pages.stock-transactions.show')->name('stock-transaction.show');
         Volt::route('/edit/{id}', 'pages.stock-transactions.edit')->name('stock-transaction.edit');
+        Route::get('/export-pdf', [\App\Http\Controllers\StockTransactionExportController::class, 'exportPdf'])->name('stock-transaction.export-pdf');
+        Route::get('/test-export', function () {
+            return 'Export route works!';
+        })->name('test.export');
+        Route::get('/test-controller', [\App\Http\Controllers\StockTransactionExportController::class, 'test'])->name('test.controller');
     });
 });
+
+// Test route completely outside middleware
+Route::get('/test-simple', function () {
+    return 'Simple test works!';
+})->withoutMiddleware(['auth', 'web']);
 
 require __DIR__ . '/auth.php';

@@ -197,14 +197,25 @@ new class extends Component {
                     {{ __('Manage and track all stock transactions in the inventory system') }}
                 </p>
             </div>
-            <a href="{{ route('stock-transaction.create') }}"
-                class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
-                wire:navigate>
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                {{ __('Create Transaction') }}
-            </a>
+            <div class="flex items-center space-x-2">
+                <a href="{{ route('stock-transaction.create') }}"
+                    class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    {{ __('Create Transaction') }}
+                </a>
+                <a href="{{ route('stock-transaction.export-pdf', [
+                    'dateFrom' => $dateFrom ?: now()->startOfMonth()->format('Y-m-d'),
+                    'dateTo' => $dateTo ?: now()->endOfMonth()->format('Y-m-d')
+                ]) }}" target="_blank"
+                    class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Export PDF
+                </a>
+            </div>
         </div>
     </div>
 
@@ -336,7 +347,7 @@ new class extends Component {
                 </div>
 
                 <!-- Product Filter -->
-<div>
+                <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('Product')
                         }}</label>
                     <select wire:model.live="selectedProduct"

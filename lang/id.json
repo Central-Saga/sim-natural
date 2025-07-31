@@ -484,5 +484,9 @@
     "Whoops!": "Aduh!",
     "Yes": "Ya",
     "You are receiving this email because we received a password reset request for your account.": "Anda menerima surel ini karena kami menerima permintaan pengaturan ulang kata sandi untuk akun anda.",
-    "Your email address is unverified.": "Alamat surel Anda belum diverifikasi."
+    "Your email address is unverified.": "Alamat surel Anda belum diverifikasi.",
+    "Overview of your inventory system": "Ringkasan sistem inventaris Anda",
+    "Stock Trend (Last 6 Months)": "Tren Stok (6 Bulan Terakhir)",
+    "Recent Transactions": "Transaksi Terbaru",
+    "No recent transactions": "Tidak ada transaksi terbaru"
 }
