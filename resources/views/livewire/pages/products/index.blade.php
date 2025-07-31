@@ -19,6 +19,12 @@ new class extends Component {
     {
         try {
             $product = Product::findOrFail($productId);
+
+            // Delete image file if it exists in storage
+            if ($product->foto_produk && !filter_var($product->foto_produk, FILTER_VALIDATE_URL)) {
+                \Storage::disk('public')->delete($product->foto_produk);
+            }
+
             $product->delete();
             session()->flash('message', 'Product deleted successfully.');
         } catch (\Exception $e) {
@@ -329,9 +335,9 @@ new class extends Component {
                 <div class="p-6">
                     <div class="space-y-4">
                         <!-- Product Image -->
-                        @if($product->foto_produk)
+                        @if($product->image_url)
                         <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
-                            <img src="{{ $product->foto_produk }}" alt="{{ $product->name }}"
+                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
                                 class="w-full h-32 object-cover">
                         </div>
                         @else

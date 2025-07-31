@@ -4,12 +4,15 @@ use Livewire\Volt\Component;
 use App\Models\Product;
 use App\Models\Category;
 use Livewire\Attributes\Layout;
+use Livewire\WithFileUploads;
 
 new class extends Component {
+    use WithFileUploads;
     #[Layout('components.layouts.app')]
 
     public $name = '';
-    public $foto_produk = '';
+    public $foto_produk = null;
+    public $foto_produk_url = '';
     public $kategori_id = '';
     public $status = 'active';
     public $stock_quantity = 0;
@@ -18,15 +21,27 @@ new class extends Component {
     {
         $this->validate([
             'name' => 'required|string|max:255',
-            'foto_produk' => 'nullable|url|max:500',
+            'foto_produk' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'foto_produk_url' => 'nullable|url|max:500',
             'kategori_id' => 'required|exists:categories,id',
             'status' => 'required|in:active,inactive',
             'stock_quantity' => 'required|integer|min:0',
         ]);
 
+        $fotoPath = null;
+
+        // Handle file upload
+        if ($this->foto_produk) {
+            $fotoPath = $this->foto_produk->store('products', 'public');
+        }
+        // Handle URL
+        elseif ($this->foto_produk_url) {
+            $fotoPath = $this->foto_produk_url;
+        }
+
         Product::create([
             'name' => $this->name,
-            'foto_produk' => $this->foto_produk,
+            'foto_produk' => $fotoPath,
             'kategori_id' => $this->kategori_id,
             'status' => $this->status,
             'stock_quantity' => $this->stock_quantity,
@@ -142,18 +157,51 @@ new class extends Component {
                         @enderror
                     </div>
 
-                    <!-- Product Image URL -->
+                    <!-- Product Image Upload -->
                     <div>
                         <label for="foto_produk"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            {{ __('Product Image URL') }}
+                            {{ __('Product Image') }}
                         </label>
-                        <input wire:model="foto_produk" type="url" id="foto_produk"
-                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:focus:ring-emerald-400 dark:focus:border-emerald-400 transition-colors duration-200"
-                            placeholder="{{ __('Enter product image URL (optional)...') }}">
-                        @error('foto_produk')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                        <div class="space-y-4">
+                            <!-- File Upload -->
+                            <div>
+                                <label for="foto_produk"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    {{ __('Upload Image File') }}
+                                </label>
+                                <input wire:model="foto_produk" type="file" id="foto_produk" accept="image/*"
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:focus:ring-emerald-400 dark:focus:border-emerald-400 transition-colors duration-200">
+                                @error('foto_produk')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- OR Divider -->
+                            <div class="relative">
+                                <div class="absolute inset-0 flex items-center">
+                                    <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                                </div>
+                                <div class="relative flex justify-center text-sm">
+                                    <span class="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">{{
+                                        __('OR') }}</span>
+                                </div>
+                            </div>
+
+                            <!-- URL Input -->
+                            <div>
+                                <label for="foto_produk_url"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    {{ __('Image URL') }}
+                                </label>
+                                <input wire:model="foto_produk_url" type="url" id="foto_produk_url"
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:focus:ring-emerald-400 dark:focus:border-emerald-400 transition-colors duration-200"
+                                    placeholder="{{ __('Enter image URL (optional)...') }}">
+                                @error('foto_produk_url')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Stock Quantity -->

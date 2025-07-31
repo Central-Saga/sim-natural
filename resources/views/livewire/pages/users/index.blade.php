@@ -482,7 +482,7 @@ new class extends Component {
 
             <!-- Pagination -->
             @if($users->hasPages())
-            a <div class="mt-8">
+            <div class="mt-8">
                 {{ $users->links() }}
             </div>
             @endif

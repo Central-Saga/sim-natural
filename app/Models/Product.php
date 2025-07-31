@@ -40,4 +40,44 @@ class Product extends Model
     {
         return $query->where('stock_quantity', '>', 0);
     }
+
+    /**
+     * Scope a query to only include products out of stock.
+     */
+    public function scopeOutOfStock($query)
+    {
+        return $query->where('stock_quantity', 0);
+    }
+
+    /**
+     * Get the image URL for the product.
+     */
+    public function getImageUrlAttribute()
+    {
+        if (!$this->foto_produk) {
+            return null;
+        }
+
+        if (filter_var($this->foto_produk, FILTER_VALIDATE_URL)) {
+            return $this->foto_produk;
+        }
+
+        return \Storage::url($this->foto_produk);
+    }
+
+    /**
+     * Check if the image is from external URL.
+     */
+    public function isExternalImage()
+    {
+        return $this->foto_produk && filter_var($this->foto_produk, FILTER_VALIDATE_URL);
+    }
+
+    /**
+     * Check if the image is from storage.
+     */
+    public function isStorageImage()
+    {
+        return $this->foto_produk && !filter_var($this->foto_produk, FILTER_VALIDATE_URL);
+    }
 }

@@ -17,6 +17,13 @@ new class extends Component {
     public function deleteCategory($categoryId)
     {
         try {
+            if (!$categoryId || $categoryId == 0) {
+                session()->flash('error', 'Invalid category ID.');
+                $this->showDeleteModal = false;
+                $this->categoryToDelete = null;
+                return;
+            }
+
             $category = Category::findOrFail($categoryId);
 
             // Check if category has products
@@ -40,6 +47,11 @@ new class extends Component {
     public function confirmDelete($categoryId)
     {
         try {
+            if (!$categoryId) {
+                session()->flash('error', 'Invalid category ID.');
+                return;
+            }
+
             $this->categoryToDelete = Category::findOrFail($categoryId);
             $this->showDeleteModal = true;
         } catch (\Exception $e) {
@@ -400,7 +412,7 @@ new class extends Component {
                     </div>
                 </div>
                 <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button wire:click="deleteCategory({{ $categoryToDelete->id }})" type="button"
+                    <button wire:click="deleteCategory({{ $categoryToDelete->id ?? 0 }})" type="button"
                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
                         {{ __('Delete') }}
                     </button>
