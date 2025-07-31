@@ -28,7 +28,7 @@ new class extends Component {
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div class="mb-4 sm:mb-0">
                 <h1
-                    class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    class="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                     {{ __('Transaction Details') }}
                 </h1>
                 <p class="mt-2 text-lg text-gray-600 dark:text-gray-300">
@@ -37,7 +37,7 @@ new class extends Component {
             </div>
             <div class="flex items-center space-x-3">
                 <a href="{{ route('stock-transaction.edit', $transaction->id) }}"
-                    class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+                    class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
@@ -93,7 +93,7 @@ new class extends Component {
         <!-- Transaction Details -->
         <div class="lg:col-span-2 space-y-6">
             <!-- Product Information -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                         {{ __('Product Information') }}
@@ -136,7 +136,7 @@ new class extends Component {
             </div>
 
             <!-- Transaction Details -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                         {{ __('Transaction Details') }}
@@ -183,7 +183,7 @@ new class extends Component {
 
             <!-- Notes -->
             @if($transaction->notes)
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                         {{ __('Notes') }}
@@ -199,7 +199,7 @@ new class extends Component {
         <!-- Sidebar -->
         <div class="space-y-6">
             <!-- User Information -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                         {{ __('User Information') }}
@@ -237,7 +237,7 @@ new class extends Component {
             </div>
 
             <!-- Timestamps -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                         {{ __('Timestamps') }}
@@ -264,14 +264,14 @@ new class extends Component {
             </div>
 
             <!-- Quick Actions -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                         {{ __('Quick Actions') }}
                     </h3>
                     <div class="space-y-3">
                         <a href="{{ route('stock-transaction.edit', $transaction->id) }}"
-                            class="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                            class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
@@ -280,7 +280,7 @@ new class extends Component {
                             {{ __('Edit Transaction') }}
                         </a>
                         <a href="{{ route('product.edit', $transaction->product->id) }}"
-                            class="w-full inline-flex items-center justify-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors">
+                            class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>

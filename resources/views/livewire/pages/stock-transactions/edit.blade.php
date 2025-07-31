@@ -138,7 +138,7 @@ new class extends Component {
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div class="mb-4 sm:mb-0">
                 <h1
-                    class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    class="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                     {{ __('Edit Stock Transaction') }}
                 </h1>
                 <p class="mt-2 text-lg text-gray-600 dark:text-gray-300">
@@ -249,7 +249,7 @@ new class extends Component {
                         {{ __('Product') }} <span class="text-red-500">*</span>
                     </label>
                     <select wire:model="newProductId" id="newProductId"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 transition-colors duration-200">
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:focus:ring-emerald-400 dark:focus:border-emerald-400 transition-colors duration-200">
                         <option value="">{{ __('Select a product...') }}</option>
                         @foreach($products as $product)
                         <option value="{{ $product->id }}" {{ $product->id == $newProductId ? 'selected' : '' }}>
@@ -289,7 +289,7 @@ new class extends Component {
                         {{ __('Transaction Type') }} <span class="text-red-500">*</span>
                     </label>
                     <select wire:model="newType" id="newType"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 transition-colors duration-200">
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:focus:ring-emerald-400 dark:focus:border-emerald-400 transition-colors duration-200">
                         <option value="in">{{ __('Stock In') }} - {{ __('Add stock to inventory') }}</option>
                         <option value="out">{{ __('Stock Out') }} - {{ __('Remove stock from inventory') }}</option>
                         <option value="adjustment">{{ __('Adjustment') }} - {{ __('Adjust stock to specific amount') }}
@@ -311,7 +311,7 @@ new class extends Component {
                         <span class="text-red-500">*</span>
                     </label>
                     <input type="number" wire:model="newQuantity" id="newQuantity" min="1"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 transition-colors duration-200"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:focus:ring-emerald-400 dark:focus:border-emerald-400 transition-colors duration-200"
                         placeholder="@if($newType === 'adjustment') {{ __('Enter new stock amount...') }} @else {{ __('Enter quantity...') }} @endif">
                     @error('newQuantity')
                     <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -324,7 +324,7 @@ new class extends Component {
                         {{ __('Status') }} <span class="text-red-500">*</span>
                     </label>
                     <select wire:model="newStatus" id="newStatus"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 transition-colors duration-200">
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:focus:ring-emerald-400 dark:focus:border-emerald-400 transition-colors duration-200">
                         <option value="completed">{{ __('Completed') }} - {{ __('Transaction is completed') }}</option>
                         <option value="pending">{{ __('Pending') }} - {{ __('Transaction is pending') }}</option>
                         <option value="cancelled">{{ __('Cancelled') }} - {{ __('Transaction is cancelled') }}</option>
@@ -340,7 +340,7 @@ new class extends Component {
                         {{ __('Notes') }}
                     </label>
                     <textarea wire:model="newNotes" id="newNotes" rows="4"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 transition-colors duration-200"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:focus:ring-emerald-400 dark:focus:border-emerald-400 transition-colors duration-200"
                         placeholder="{{ __('Enter transaction notes (optional)...') }}"></textarea>
                     @error('newNotes')
                     <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -350,12 +350,12 @@ new class extends Component {
                 <!-- Form Actions -->
                 <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                     <a href="{{ route('stock-transaction.index') }}"
-                        class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-colors duration-200"
+                        class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 dark:focus:ring-offset-gray-800 transition-colors duration-200"
                         wire:navigate>
                         {{ __('Cancel') }}
                     </a>
                     <button type="submit"
-                        class="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
                         <div class="flex items-center space-x-2">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
