@@ -50,7 +50,6 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('/create', 'pages.stock-transactions.create')->name('stock-transaction.create');
         Volt::route('/{id}', 'pages.stock-transactions.show')->name('stock-transaction.show');
         Volt::route('/edit/{id}', 'pages.stock-transactions.edit')->name('stock-transaction.edit');
-        Route::get('/export-pdf', [\App\Http\Controllers\StockTransactionExportController::class, 'exportPdf'])->name('stock-transaction.export-pdf');
         Route::get('/test-export', function () {
             return 'Export route works!';
         })->name('test.export');
@@ -62,5 +61,13 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/test-simple', function () {
     return 'Simple test works!';
 })->withoutMiddleware(['auth', 'web']);
+
+// Test export route outside middleware
+Route::get('/test-export-simple', [\App\Http\Controllers\StockTransactionExportController::class, 'test'])->withoutMiddleware(['auth', 'web']);
+
+// Export PDF route with auth middleware
+Route::middleware(['auth'])->group(function () {
+    Route::get('/export-stock-pdf', [\App\Http\Controllers\StockTransactionExportController::class, 'exportPdf'])->name('stock-transaction.export-pdf');
+});
 
 require __DIR__ . '/auth.php';

@@ -43,12 +43,7 @@
 <body>
     <div class="header">Laporan Transaksi Stok</div>
     <div class="subheader">
-        Periode:
-        @if($dateFrom && $dateTo)
-        {{ date('d M Y', strtotime($dateFrom)) }} - {{ date('d M Y', strtotime($dateTo)) }}
-        @else
-        Semua Data
-        @endif
+        Semua Data Transaksi
     </div>
     <table>
         <thead>
