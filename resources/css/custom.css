@@ -1,0 +1,40 @@
+/* Custom Button Colors */
+
+/* Emerald Primary Button */
+.btn-emerald {
+    --color-accent: var(--color-emerald-600);
+    --color-accent-content: var(--color-emerald-600);
+    --color-accent-foreground: var(--color-white);
+}
+
+.dark .btn-emerald {
+    --color-accent: var(--color-emerald-600);
+    --color-accent-content: var(--color-emerald-400);
+    --color-accent-foreground: var(--color-white);
+}
+
+/* Brown Primary Button */
+.btn-brown {
+    --color-accent: #8B4513;
+    --color-accent-content: #A0522D;
+    --color-accent-foreground: var(--color-white);
+}
+
+.dark .btn-brown {
+    --color-accent: #D2691E;
+    --color-accent-content: #CD853F;
+    --color-accent-foreground: var(--color-white);
+}
+
+/* Teal Primary Button */
+.btn-teal {
+    --color-accent: var(--color-teal-600);
+    --color-accent-content: var(--color-teal-600);
+    --color-accent-foreground: var(--color-white);
+}
+
+.dark .btn-teal {
+    --color-accent: var(--color-teal-600);
+    --color-accent-content: var(--color-teal-400);
+    --color-accent-foreground: var(--color-white);
+} 
