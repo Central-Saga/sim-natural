@@ -60,4 +60,12 @@ class User extends Authenticatable
             ->map(fn($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
+
+    /**
+     * Get the stock transactions for the user.
+     */
+    public function stockTransactions()
+    {
+        return $this->hasMany(StockTransaction::class);
+    }
 }

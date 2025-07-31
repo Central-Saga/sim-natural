@@ -26,6 +26,9 @@
                     :current="request()->routeIs('category.*')" wire:navigate>{{ __('Category') }}</flux:navlist.item>
                 <flux:navlist.item icon="cube" :href="route('product.index')" :current="request()->routeIs('product.*')"
                     wire:navigate>{{ __('Product') }}</flux:navlist.item>
+                <flux:navlist.item icon="chart-pie" :href="route('stock-transaction.index')"
+                    :current="request()->routeIs('stock-transaction.*')" wire:navigate>{{ __('Stock Transaction') }}
+                </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 

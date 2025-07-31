@@ -44,6 +44,13 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('/create', 'pages.products.create')->name('product.create');
         Volt::route('/edit/{id}', 'pages.products.edit')->name('product.edit');
     });
+
+    Route::prefix('stock-transaction')->group(function () {
+        Volt::route('/', 'pages.stock-transactions.index')->name('stock-transaction.index');
+        Volt::route('/create', 'pages.stock-transactions.create')->name('stock-transaction.create');
+        Volt::route('/{id}', 'pages.stock-transactions.show')->name('stock-transaction.show');
+        Volt::route('/edit/{id}', 'pages.stock-transactions.edit')->name('stock-transaction.edit');
+    });
 });
 
 require __DIR__ . '/auth.php';
