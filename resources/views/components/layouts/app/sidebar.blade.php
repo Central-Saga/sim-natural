@@ -22,6 +22,10 @@
                     :current="request()->routeIs('role.*')" wire:navigate>{{ __('Role') }}</flux:navlist.item>
                 <flux:navlist.item icon="user" :href="route('user.index')" :current="request()->routeIs('user.*')"
                     wire:navigate>{{ __('User') }}</flux:navlist.item>
+                <flux:navlist.item icon="tag" :href="route('category.index')"
+                    :current="request()->routeIs('category.*')" wire:navigate>{{ __('Category') }}</flux:navlist.item>
+                <flux:navlist.item icon="cube" :href="route('product.index')" :current="request()->routeIs('product.*')"
+                    wire:navigate>{{ __('Product') }}</flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 

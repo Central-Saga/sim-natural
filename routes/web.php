@@ -32,6 +32,18 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('/create', 'pages.users.create')->name('user.create');
         Volt::route('/edit/{id}', 'pages.users.edit')->name('user.edit');
     });
+
+    Route::prefix('category')->group(function () {
+        Volt::route('/', 'pages.categories.index')->name('category.index');
+        Volt::route('/create', 'pages.categories.create')->name('category.create');
+        Volt::route('/edit/{id}', 'pages.categories.edit')->name('category.edit');
+    });
+
+    Route::prefix('product')->group(function () {
+        Volt::route('/', 'pages.products.index')->name('product.index');
+        Volt::route('/create', 'pages.products.create')->name('product.create');
+        Volt::route('/edit/{id}', 'pages.products.edit')->name('product.edit');
+    });
 });
 
 require __DIR__ . '/auth.php';
