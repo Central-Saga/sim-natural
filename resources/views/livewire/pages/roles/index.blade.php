@@ -480,10 +480,8 @@ new class extends Component {
 
         <!-- Pagination -->
         @if($roles->hasPages())
-        <div class="mt-8 flex justify-center">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg px-6 py-4">
-                {{ $roles->links() }}
-            </div>
+        <div class="mt-8">
+            {{ $roles->links() }}
         </div>
         @endif
     </div>

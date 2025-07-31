@@ -482,18 +482,13 @@ new class extends Component {
 
             <!-- Pagination -->
             @if($users->hasPages())
-            <div class="mt-8 flex justify-center">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg px-6 py-4">
-                    {{ $users->links() }}
-                </div>
+            a <div class="mt-8">
+                {{ $users->links() }}
             </div>
             @endif
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <!-- Debug: showDeleteModal = {{ $showDeleteModal ? 'true' : 'false' }}, userToDelete = {{ $userToDelete ? $userToDelete->name : 'null' }} -->
-    <!-- Modal is always visible for testing -->
     <div style="display: {{ $showDeleteModal ? 'block' : 'none' }};">
         <div class="fixed inset-0 backdrop-blur-md transition-opacity z-50" wire:click="cancelDelete"></div>
 
