@@ -18,6 +18,8 @@ new class extends Component {
     public $selectedUser = '';
     public $dateFrom = '';
     public $dateTo = '';
+    public $showDeleteModal = false;
+    public $transactionToDelete = null;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -78,7 +80,7 @@ new class extends Component {
         $this->resetPage();
     }
 
-    public function deleteTransaction($id)
+        public function deleteTransaction($id)
     {
         try {
             $transaction = StockTransaction::findOrFail($id);
@@ -102,10 +104,29 @@ new class extends Component {
             });
 
             session()->flash('success', __('Transaction deleted successfully.'));
-
         } catch (\Exception $e) {
             session()->flash('error', __('Failed to delete transaction.') . ' ' . $e->getMessage());
         }
+
+        $this->showDeleteModal = false;
+        $this->transactionToDelete = null;
+    }
+
+    public function confirmDelete($id)
+    {
+        try {
+            $this->transactionToDelete = StockTransaction::with(['product', 'user'])->findOrFail($id);
+            $this->showDeleteModal = true;
+            $this->dispatch('modal-opened');
+        } catch (\Exception $e) {
+            session()->flash('error', __('Transaction not found.'));
+        }
+    }
+
+    public function cancelDelete()
+    {
+        $this->showDeleteModal = false;
+        $this->transactionToDelete = null;
     }
 
     public function with(): array
@@ -415,8 +436,7 @@ new class extends Component {
                                             </path>
                                         </svg>
                                     </a>
-                                    <button wire:click="deleteTransaction({{ $transaction->id }})"
-                                        wire:confirm="{{ __('Are you sure you want to delete this transaction?') }}"
+                                    <button wire:click="confirmDelete({{ $transaction->id }})"
                                         class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                                         title="{{ __('Delete Transaction') }}">
                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -445,6 +465,84 @@ new class extends Component {
                 {{ $transactions->links() }}
             </div>
             @endif
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div style="display: {{ $showDeleteModal ? 'block' : 'none' }};">
+        <div class="fixed inset-0 backdrop-blur-md transition-opacity z-50" wire:click="cancelDelete"></div>
+
+        <div class="fixed inset-0 z-50 overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 px-4 pb-4 pt-5 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900 sm:mx-0 sm:h-10 sm:w-10">
+                            <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                            <h3 class="text-lg font-semibold leading-6 text-gray-900 dark:text-white">
+                                {{ __('Delete Transaction') }}
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    {{ __('Are you sure you want to delete this transaction?') }}
+                                </p>
+                                @if($transactionToDelete)
+                                <div class="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ __('Transaction Details') }}:
+                                    </p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                                        <span class="font-medium">{{ __('Product') }}:</span> {{
+                                        $transactionToDelete->product->name }}
+                                    </p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                                        <span class="font-medium">{{ __('Type') }}:</span>
+                                        <span
+                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $transactionToDelete->type_color }}">
+                                            {{ $transactionToDelete->type_label }}
+                                        </span>
+                                    </p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                                        <span class="font-medium">{{ __('Quantity') }}:</span> {{
+                                        number_format($transactionToDelete->quantity) }}
+                                    </p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                                        <span class="font-medium">{{ __('Status') }}:</span>
+                                        <span
+                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $transactionToDelete->status_color }}">
+                                            {{ $transactionToDelete->status_label }}
+                                        </span>
+                                    </p>
+                                </div>
+                                @endif
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-2">
+                                    {{ __('This action cannot be undone.') }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                        <button type="button"
+                            class="inline-flex w-full justify-center rounded-xl bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                            wire:click="deleteTransaction({{ $transactionToDelete ? $transactionToDelete->id : 0 }})">
+                            {{ __('Delete') }}
+                        </button>
+                        <button type="button"
+                            class="mt-3 inline-flex w-full justify-center rounded-xl bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:mt-0 sm:w-auto"
+                            wire:click="cancelDelete">
+                            {{ __('Cancel') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

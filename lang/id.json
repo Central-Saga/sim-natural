@@ -482,6 +482,7 @@
     "Failed to delete transaction.": "Gagal menghapus transaksi.",
     "Are you sure you want to delete this transaction?": "Apakah Anda yakin ingin menghapus transaksi ini?",
     "Delete Transaction": "Hapus Transaksi",
+    "This action cannot be undone.": "Tindakan ini tidak dapat dibatalkan.",
         "Edit Transaction": "Edit Transaksi",
         "Optional": "Opsional",
         "Transaction Details": "Detail Transaksi",
