@@ -38,15 +38,23 @@ new class extends Component {
     public function confirmDelete($productId)
     {
         try {
+            \Log::info('Confirm delete called for product ID: ' . $productId);
             $this->productToDelete = Product::findOrFail($productId);
             $this->showDeleteModal = true;
+            \Log::info('Modal should be visible now. showDeleteModal: ' . ($this->showDeleteModal ? 'true' : 'false'));
+            \Log::info('productToDelete: ' . ($this->productToDelete ? $this->productToDelete->name : 'null'));
+
+            // Force a re-render
+            $this->dispatch('modal-opened');
         } catch (\Exception $e) {
             session()->flash('error', 'Product not found.');
+            \Log::error('Error in confirmDelete: ' . $e->getMessage());
         }
     }
 
     public function cancelDelete()
     {
+        \Log::info('Cancel delete called');
         $this->showDeleteModal = false;
         $this->productToDelete = null;
     }
@@ -425,18 +433,16 @@ new class extends Component {
         @endif
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    @if($showDeleteModal)
-    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div
-                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+    <div style="display: {{ $showDeleteModal ? 'block' : 'none' }};">
+        <div class="fixed inset-0 backdrop-blur-md transition-opacity z-50" wire:click="cancelDelete"></div>
+
+        <div class="fixed inset-0 z-50 overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 px-4 pb-4 pt-5 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                     <div class="sm:flex sm:items-start">
                         <div
-                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900 sm:mx-0 sm:h-10 sm:w-10">
+                            class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900 sm:mx-0 sm:h-10 sm:w-10">
                             <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -444,31 +450,38 @@ new class extends Component {
                                 </path>
                             </svg>
                         </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
+                        <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                            <h3 class="text-lg font-semibold leading-6 text-gray-900 dark:text-white">
                                 {{ __('Delete Product') }}
                             </h3>
                             <div class="mt-2">
                                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                                    {{ __('Are you sure you want to delete the product') }} <strong>{{
-                                        $productToDelete->name }}</strong>? {{ __('This action cannot be undone.') }}
+                                    @if($productToDelete)
+                                    {{ __('Are you sure you want to delete the product') }} <strong
+                                        class="text-gray-900 dark:text-white">{{ $productToDelete->name }}</strong>? {{
+                                    __('This
+                                    action cannot be undone.') }}
+                                    @else
+                                    {{ __('Are you sure you want to delete this product? This action cannot be undone.')
+                                    }}
+                                    @endif
                                 </p>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button wire:click="deleteProduct({{ $productToDelete->id }})" type="button"
-                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                        {{ __('Delete') }}
-                    </button>
-                    <button wire:click="cancelDelete" type="button"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                        {{ __('Cancel') }}
-                    </button>
+                    <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse gap-3">
+                        <button wire:click="deleteProduct({{ $productToDelete ? $productToDelete->id : 0 }})"
+                            type="button"
+                            class="inline-flex w-full justify-center rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 transition-colors sm:w-auto">
+                            {{ __('Delete') }}
+                        </button>
+                        <button wire:click="cancelDelete" type="button"
+                            class="mt-3 inline-flex w-full justify-center rounded-xl bg-gray-100 dark:bg-gray-700 px-4 py-2.5 text-sm font-semibold text-gray-900 dark:text-white shadow-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors sm:mt-0 sm:w-auto">
+                            {{ __('Cancel') }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    @endif
 </div>
