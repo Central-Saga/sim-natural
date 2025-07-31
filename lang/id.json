@@ -346,6 +346,14 @@
     "Total Roles": "Total Peran",
     "Active Roles": "Peran Aktif",
     "Total Users": "Total Pengguna",
+    "Active Users": "Pengguna Aktif",
+    "Inactive Users": "Pengguna Tidak Aktif",
+    "Users with Roles": "Pengguna dengan Peran",
+    "Total Categories": "Total Kategori",
+    "Active Categories": "Kategori Aktif",
+    "Inactive Categories": "Kategori Tidak Aktif",
+    "Categories with Products": "Kategori dengan Produk",
+    "Products": "Produk",
     "Search roles...": "Cari peran...",
     "Edit Role": "Edit Peran",
     "Delete Role": "Hapus Peran",
@@ -411,5 +419,10 @@
     "Get started by creating a new category.": "Mulai dengan membuat kategori baru.",
     "Delete Category": "Hapus Kategori",
     "Are you sure you want to delete the category": "Apakah Anda yakin ingin menghapus kategori",
-    "Are you sure you want to delete this category? This action cannot be undone.": "Apakah Anda yakin ingin menghapus kategori ini? Tindakan ini tidak dapat dibatalkan."
+    "Are you sure you want to delete this category? This action cannot be undone.": "Apakah Anda yakin ingin menghapus kategori ini? Tindakan ini tidak dapat dibatalkan.",
+    "Active Products": "Produk Aktif",
+    "Inactive Products": "Produk Tidak Aktif",
+    "No description": "Tidak ada deskripsi",
+    "products": "produk",
+    "This action cannot be undone.": "Tindakan ini tidak dapat dibatalkan."
 }
