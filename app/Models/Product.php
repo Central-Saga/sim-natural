@@ -26,6 +26,14 @@ class Product extends Model
     }
 
     /**
+     * Get the stock transactions for the product.
+     */
+    public function stockTransactions()
+    {
+        return $this->hasMany(StockTransaction::class);
+    }
+
+    /**
      * Scope a query to only include active products.
      */
     public function scopeActive($query)

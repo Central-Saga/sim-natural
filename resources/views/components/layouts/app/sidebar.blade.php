@@ -18,14 +18,32 @@
             <flux:navlist.group class="grid">
                 <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+
+                @can('mengelola role')
                 <flux:navlist.item icon="shield-check" :href="route('role.index')"
                     :current="request()->routeIs('role.*')" wire:navigate>{{ __('Role') }}</flux:navlist.item>
+                @endcan
+
+                @can('mengelola user')
                 <flux:navlist.item icon="user" :href="route('user.index')" :current="request()->routeIs('user.*')"
                     wire:navigate>{{ __('User') }}</flux:navlist.item>
+                @endcan
+
+                @can('mengelola kategori')
                 <flux:navlist.item icon="tag" :href="route('category.index')"
                     :current="request()->routeIs('category.*')" wire:navigate>{{ __('Category') }}</flux:navlist.item>
+                @endcan
+
+                @can('mengelola produk')
                 <flux:navlist.item icon="cube" :href="route('product.index')" :current="request()->routeIs('product.*')"
                     wire:navigate>{{ __('Product') }}</flux:navlist.item>
+                @endcan
+
+                @can('melihat transaksi stok')
+                <flux:navlist.item icon="chart-pie" :href="route('stock-transaction.index')"
+                    :current="request()->routeIs('stock-transaction.*')" wire:navigate>{{ __('Stock Transaction') }}
+                </flux:navlist.item>
+                @endcan
             </flux:navlist.group>
         </flux:navlist>
 
@@ -52,6 +70,12 @@
                             <div class="grid flex-1 text-start text-sm leading-tight">
                                 <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
                                 <span class="truncate text-xs">{{ auth()->user()->email }}</span>
+                                <span class="truncate text-xs text-gray-500">
+                                    @foreach(auth()->user()->roles as $role)
+                                    {{ $role->name }}
+                                    @if(!$loop->last), @endif
+                                    @endforeach
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -101,6 +125,12 @@
                             <div class="grid flex-1 text-start text-sm leading-tight">
                                 <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
                                 <span class="truncate text-xs">{{ auth()->user()->email }}</span>
+                                <span class="truncate text-xs text-gray-500">
+                                    @foreach(auth()->user()->roles as $role)
+                                    {{ $role->name }}
+                                    @if(!$loop->last), @endif
+                                    @endforeach
+                                </span>
                             </div>
                         </div>
                     </div>
