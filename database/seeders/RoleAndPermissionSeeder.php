@@ -18,36 +18,50 @@ class RoleAndPermissionSeeder extends Seeder
         // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create permissions
-        Permission::create(['name' => 'mengelola user']);
-        Permission::create(['name' => 'mengelola role']);
-        Permission::create(['name' => 'mengelola kategori']);
-        Permission::create(['name' => 'mengelola produk']);
-        Permission::create(['name' => 'mengelola transaksi stok']);
-        Permission::create(['name' => 'melihat produk']);
-        Permission::create(['name' => 'melihat transaksi stok']);
-        Permission::create(['name' => 'mencetak laporan']);
-
-        // Create roles and assign permissions
-        $admin = Role::create(['name' => 'Admin']);
-        $admin->givePermissionTo([
+        // Create permissions if they don't exist
+        $permissions = [
             'mengelola user',
             'mengelola role',
             'mengelola kategori',
-        ]);
-
-        // Create role for staff
-        $staff = Role::create(['name' => 'Akuntan']);
-        $staff->givePermissionTo([
             'mengelola produk',
+            'mengelola transaksi stok',
+            'melihat produk',
+            'melihat transaksi stok',
+            'mencetak laporan',
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+
+        // Create roles and assign permissions
+        $admin = Role::firstOrCreate(['name' => 'Admin']);
+        $admin->syncPermissions([
+            'mengelola user',
+            'mengelola role',
+            'mengelola kategori',
+            'mengelola produk',
+            'mengelola transaksi stok',
+            'melihat produk',
             'melihat transaksi stok',
             'mencetak laporan',
         ]);
 
-        $visitor = Role::create(['name' => 'Karyawan Gudang']);
-        $visitor->givePermissionTo([
+        // Create role for Akuntan
+        $akuntan = Role::firstOrCreate(['name' => 'Akuntan']);
+        $akuntan->syncPermissions([
+            'mengelola produk',
+            'melihat produk',
+            'melihat transaksi stok',
+            'mencetak laporan',
+        ]);
+
+        // Create role for Karyawan Gudang
+        $karyawanGudang = Role::firstOrCreate(['name' => 'Karyawan Gudang']);
+        $karyawanGudang->syncPermissions([
             'melihat produk',
             'mengelola transaksi stok',
+            'melihat transaksi stok',
         ]);
     }
 }

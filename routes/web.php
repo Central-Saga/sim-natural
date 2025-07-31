@@ -21,39 +21,49 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
-    Route::prefix('role')->group(function () {
+    // Role management - hanya Admin
+    Route::prefix('role')->middleware(['permission:mengelola role'])->group(function () {
         Volt::route('/', 'pages.roles.index')->name('role.index');
         Volt::route('/create', 'pages.roles.create')->name('role.create');
         Volt::route('/edit/{id}', 'pages.roles.edit')->name('role.edit');
     });
 
-    Route::prefix('user')->group(function () {
+    // User management - hanya Admin
+    Route::prefix('user')->middleware(['permission:mengelola user'])->group(function () {
         Volt::route('/', 'pages.users.index')->name('user.index');
         Volt::route('/create', 'pages.users.create')->name('user.create');
         Volt::route('/edit/{id}', 'pages.users.edit')->name('user.edit');
     });
 
-    Route::prefix('category')->group(function () {
+    // Category management - hanya Admin
+    Route::prefix('category')->middleware(['permission:mengelola kategori'])->group(function () {
         Volt::route('/', 'pages.categories.index')->name('category.index');
         Volt::route('/create', 'pages.categories.create')->name('category.create');
         Volt::route('/edit/{id}', 'pages.categories.edit')->name('category.edit');
     });
 
-    Route::prefix('product')->group(function () {
+    // Product management - Admin dan Akuntan
+    Route::prefix('product')->middleware(['permission:mengelola produk'])->group(function () {
         Volt::route('/', 'pages.products.index')->name('product.index');
         Volt::route('/create', 'pages.products.create')->name('product.create');
         Volt::route('/edit/{id}', 'pages.products.edit')->name('product.edit');
     });
 
-    Route::prefix('stock-transaction')->group(function () {
+    // Stock transaction management - Admin dan Karyawan Gudang
+    Route::prefix('stock-transaction')->middleware(['permission:melihat transaksi stok'])->group(function () {
         Volt::route('/', 'pages.stock-transactions.index')->name('stock-transaction.index');
-        Volt::route('/create', 'pages.stock-transactions.create')->name('stock-transaction.create');
         Volt::route('/{id}', 'pages.stock-transactions.show')->name('stock-transaction.show');
+    });
+
+    // Stock transaction create/edit - hanya Admin dan Karyawan Gudang
+    Route::prefix('stock-transaction')->middleware(['permission:mengelola transaksi stok'])->group(function () {
+        Volt::route('/create', 'pages.stock-transactions.create')->name('stock-transaction.create');
         Volt::route('/edit/{id}', 'pages.stock-transactions.edit')->name('stock-transaction.edit');
-        Route::get('/test-export', function () {
-            return 'Export route works!';
-        })->name('test.export');
-        Route::get('/test-controller', [\App\Http\Controllers\StockTransactionExportController::class, 'test'])->name('test.controller');
+    });
+
+    // Export PDF - hanya Admin dan Akuntan
+    Route::middleware(['permission:mencetak laporan'])->group(function () {
+        Route::get('/export-stock-pdf', [\App\Http\Controllers\StockTransactionExportController::class, 'exportPdf'])->name('stock-transaction.export-pdf');
     });
 });
 
@@ -64,10 +74,5 @@ Route::get('/test-simple', function () {
 
 // Test export route outside middleware
 Route::get('/test-export-simple', [\App\Http\Controllers\StockTransactionExportController::class, 'test'])->withoutMiddleware(['auth', 'web']);
-
-// Export PDF route with auth middleware
-Route::middleware(['auth'])->group(function () {
-    Route::get('/export-stock-pdf', [\App\Http\Controllers\StockTransactionExportController::class, 'exportPdf'])->name('stock-transaction.export-pdf');
-});
 
 require __DIR__ . '/auth.php';

@@ -198,6 +198,7 @@ new class extends Component {
                 </p>
             </div>
             <div class="flex items-center space-x-2">
+                @can('mengelola transaksi stok')
                 <a href="{{ route('stock-transaction.create') }}"
                     class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,6 +206,8 @@ new class extends Component {
                     </svg>
                     {{ __('Create Transaction') }}
                 </a>
+                @endcan
+                @can('mencetak laporan')
                 <a href="{{ url('/export-stock-pdf') }}" target="_blank"
                     class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,6 +215,7 @@ new class extends Component {
                     </svg>
                     Export PDF
                 </a>
+                @endcan
             </div>
         </div>
     </div>
@@ -435,6 +439,7 @@ new class extends Component {
                                             </path>
                                         </svg>
                                     </a>
+                                    @can('mengelola transaksi stok')
                                     <a href="{{ route('stock-transaction.edit', $transaction->id) }}"
                                         class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                                         title="{{ __('Edit Transaction') }}">
@@ -453,6 +458,7 @@ new class extends Component {
                                             </path>
                                         </svg>
                                     </button>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
