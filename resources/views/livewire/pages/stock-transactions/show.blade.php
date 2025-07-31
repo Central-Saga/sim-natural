@@ -83,10 +83,36 @@ new class extends Component {
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <div class="flex-shrink-0">
+                        @if($transaction->status === 'completed')
                         <span
-                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $transaction->status_color }}">
-                            {{ $transaction->status_label }}
+                            class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100 dark:bg-green-900">
+                            <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2l4-4" />
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none" />
+                            </svg>
                         </span>
+                        @elseif($transaction->status === 'pending')
+                        <span
+                            class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900">
+                            <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" />
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        @else
+                        <span
+                            class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 dark:bg-red-900">
+                            <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 9l-6 6m0-6l6 6" />
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        @endif
                     </div>
                     <div>
                         <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
@@ -98,10 +124,32 @@ new class extends Component {
                     </div>
                 </div>
                 <div class="flex-shrink-0">
+                    @if($transaction->type === 'in')
                     <span
-                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $transaction->type_color }}">
-                        {{ $transaction->type_label }}
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900">
+                        <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
                     </span>
+                    @elseif($transaction->type === 'out')
+                    <span
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 dark:bg-red-900">
+                        <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20V4m8 8H4" />
+                        </svg>
+                    </span>
+                    @else
+                    <span
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15.232 5.232l3.536 3.536M9 11l6 6M3 21h18" />
+                        </svg>
+                    </span>
+                    @endif
                 </div>
             </div>
         </div>
@@ -166,10 +214,34 @@ new class extends Component {
                                 {{ __('Transaction Type') }}
                             </label>
                             <div class="mt-1">
+                                @if($transaction->type === 'in')
                                 <span
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $transaction->type_color }}">
-                                    {{ $transaction->type_label }}
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900">
+                                    <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
                                 </span>
+                                @elseif($transaction->type === 'out')
+                                <span
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 dark:bg-red-900">
+                                    <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 20V4m8 8H4" />
+                                    </svg>
+                                </span>
+                                @else
+                                <span
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900">
+                                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.232 5.232l3.536 3.536M9 11l6 6M3 21h18" />
+                                    </svg>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         <div>
