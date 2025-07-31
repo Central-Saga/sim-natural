@@ -336,7 +336,7 @@ new class extends Component {
                 </div>
 
                 <!-- Product Filter -->
-                <div>
+<div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('Product')
                         }}</label>
                     <select wire:model.live="selectedProduct"
