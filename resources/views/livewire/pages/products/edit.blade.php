@@ -22,7 +22,12 @@ new class extends Component {
     {
         $this->product = Product::findOrFail($id);
         $this->name = $this->product->name;
-        $this->foto_produk_url = $this->product->foto_produk;
+        // Hanya isi foto_produk_url jika memang URL
+        if (filter_var($this->product->foto_produk, FILTER_VALIDATE_URL)) {
+            $this->foto_produk_url = $this->product->foto_produk;
+        } else {
+            $this->foto_produk_url = '';
+        }
         $this->kategori_id = $this->product->kategori_id;
         $this->status = $this->product->status;
         $this->stock_quantity = $this->product->stock_quantity;
