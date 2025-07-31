@@ -19,8 +19,8 @@
                 <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                 <flux:navlist.item icon="shield-check" :href="route('role.index')"
-                    :current="request()->routeIs('role.index')" wire:navigate>{{ __('Role') }}</flux:navlist.item>
-                <flux:navlist.item icon="user" :href="route('user.index')" :current="request()->routeIs('user.index')"
+                    :current="request()->routeIs('role.*')" wire:navigate>{{ __('Role') }}</flux:navlist.item>
+                <flux:navlist.item icon="user" :href="route('user.index')" :current="request()->routeIs('user.*')"
                     wire:navigate>{{ __('User') }}</flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>

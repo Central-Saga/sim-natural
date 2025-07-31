@@ -10,6 +10,7 @@ new class extends Component {
 
     public $name = '';
     public $email = '';
+    public $status = 'active';
     public $password = '';
     public $password_confirmation = '';
     public $selectedRoles = [];
@@ -19,12 +20,14 @@ new class extends Component {
         $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'status' => 'required|in:active,inactive',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         $user = User::create([
             'name' => $this->name,
             'email' => $this->email,
+            'status' => $this->status,
             'password' => bcrypt($this->password),
         ]);
 
@@ -146,6 +149,22 @@ new class extends Component {
                                 class="block w-full px-4 py-3 border-0 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none shadow-sm"
                                 placeholder="{{ __('Enter email address') }}">
                             @error('email')
+                            <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                {{ __('Status') }} <span class="text-red-500">*</span>
+                            </label>
+                            <select wire:model="status" id="status"
+                                class="block w-full px-4 py-3 border-0 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none shadow-sm">
+                                <option value="active">{{ __('Active') }}</option>
+                                <option value="inactive">{{ __('Inactive') }}</option>
+                            </select>
+                            @error('status')
                             <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>

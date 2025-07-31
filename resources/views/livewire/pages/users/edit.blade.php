@@ -11,6 +11,7 @@ new class extends Component {
     public $userId;
     public $name = '';
     public $email = '';
+    public $status = 'active';
     public $password = '';
     public $password_confirmation = '';
     public $selectedRoles = [];
@@ -22,14 +23,16 @@ new class extends Component {
 
         $this->name = $user->name;
         $this->email = $user->email;
+        $this->status = $user->status;
         $this->selectedRoles = $user->roles->pluck('name')->toArray();
     }
 
     public function save()
     {
-        $this->validate([
+                $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $this->userId,
+            'status' => 'required|in:active,inactive',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
@@ -38,6 +41,7 @@ new class extends Component {
         $user->update([
             'name' => $this->name,
             'email' => $this->email,
+            'status' => $this->status,
         ]);
 
         if ($this->password) {
@@ -155,8 +159,8 @@ new class extends Component {
                 <div class="bg-white dark:bg-gray-800 rounded-lg p-3 border border-blue-200 dark:border-blue-700">
                     <div class="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1">{{ __('Status') }}</div>
                     <div
-                        class="text-sm font-semibold {{ $user->email_verified_at ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400' }}">
-                        {{ $user->email_verified_at ? __('Verified') : __('Pending') }}
+                        class="text-sm font-semibold {{ $user->status === 'active' ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400' }}">
+                        {{ $user->status === 'active' ? __('Active') : __('Inactive') }}
                     </div>
                 </div>
             </div>
@@ -228,6 +232,22 @@ new class extends Component {
                                 class="block w-full px-4 py-3 border-0 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none shadow-sm"
                                 placeholder="{{ __('Enter email address') }}">
                             @error('email')
+                            <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                {{ __('Status') }} <span class="text-red-500">*</span>
+                            </label>
+                            <select wire:model="status" id="status"
+                                class="block w-full px-4 py-3 border-0 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none shadow-sm">
+                                <option value="active">{{ __('Active') }}</option>
+                                <option value="inactive">{{ __('Inactive') }}</option>
+                            </select>
+                            @error('status')
                             <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
