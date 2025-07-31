@@ -5,7 +5,6 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\StockTransaction;
-use App\Services\StockTransactionService;
 use Livewire\Attributes\Layout;
 
 new class extends Component {
@@ -13,8 +12,6 @@ new class extends Component {
 
     public function with(): array
     {
-        $stockTransactionService = new StockTransactionService();
-
         // Get statistics
         $totalProducts = Product::count();
         $totalCategories = Category::count();
@@ -40,7 +37,7 @@ new class extends Component {
         ];
     }
 
-    private function getMonthlyStockData()
+    private function getMonthlyStockData(): array
     {
         $months = [];
         $stockIn = [];
@@ -119,8 +116,7 @@ new class extends Component {
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Total Categories') }}</p>
                     <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ number_format($totalCategories ?? 0)
-                        }}
-                    </p>
+                        }}</p>
                 </div>
             </div>
         </div>
@@ -162,8 +158,7 @@ new class extends Component {
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Total Transactions') }}</p>
                     <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ number_format($totalTransactions ??
-                        0) }}
-                    </p>
+                        0) }}</p>
                 </div>
             </div>
         </div>
@@ -250,11 +245,12 @@ new class extends Component {
     </div>
 </div>
 
-<!-- Chart.js Script -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('stockChart').getContext('2d');
+    const canvas = document.getElementById('stockChart');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
 
     new Chart(ctx, {
         type: 'line',
@@ -279,7 +275,7 @@ new class extends Component {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'top',
+                    position: 'top'
                 }
             },
             scales: {
