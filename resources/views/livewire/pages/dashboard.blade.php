@@ -173,7 +173,7 @@ new class extends Component {
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                     {{ __('Stock Trend (Last 6 Months)') }}
                 </h3>
-                <div class="h-64">
+                <div class="h-64" wire:ignore>
                     <canvas id="stockChart"></canvas>
                 </div>
             </div>
@@ -246,44 +246,90 @@ new class extends Component {
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const canvas = document.getElementById('stockChart');
-    if (!canvas) return;
+    // Global chart instance
+    let stockChart = null;
 
-    const ctx = canvas.getContext('2d');
+    // Function to initialize chart
+    function initializeChart() {
+        const canvas = document.getElementById('stockChart');
+        if (!canvas) return;
 
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: @json($monthlyData['months'] ?? []),
-            datasets: [{
-                label: '{{ __("Stock In") }}',
-                data: @json($monthlyData['stockIn'] ?? []),
-                borderColor: 'rgb(34, 197, 94)',
-                backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                tension: 0.1
-            }, {
-                label: '{{ __("Stock Out") }}',
-                data: @json($monthlyData['stockOut'] ?? []),
-                borderColor: 'rgb(239, 68, 68)',
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                tension: 0.1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top'
-                }
+        // Check if Chart.js is available
+        if (typeof Chart === 'undefined') {
+            setTimeout(initializeChart, 50);
+            return;
+        }
+
+        const ctx = canvas.getContext('2d');
+
+        // Destroy existing chart if it exists
+        if (stockChart) {
+            stockChart.destroy();
+        }
+
+        stockChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @json($monthlyData['months'] ?? []),
+                datasets: [{
+                    label: '{{ __("Stock In") }}',
+                    data: @json($monthlyData['stockIn'] ?? []),
+                    borderColor: 'rgb(34, 197, 94)',
+                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                    tension: 0.1
+                }, {
+                    label: '{{ __("Stock Out") }}',
+                    data: @json($monthlyData['stockOut'] ?? []),
+                    borderColor: 'rgb(239, 68, 68)',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    tension: 0.1
+                }]
             },
-            scales: {
-                y: {
-                    beginAtZero: true
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
-        }
+        });
+    }
+
+    // Start polling immediately
+    initializeChart();
+
+    // Also try on DOM ready
+    document.addEventListener('DOMContentLoaded', initializeChart);
+
+    // Re-initialize chart when Livewire navigates
+    document.addEventListener('livewire:navigated', initializeChart);
+    document.addEventListener('livewire:load', initializeChart);
+    document.addEventListener('livewire:updated', initializeChart);
+    document.addEventListener('livewire:init', initializeChart);
+    document.addEventListener('livewire:initialized', initializeChart);
+
+    // Use MutationObserver to watch for DOM changes
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                const canvas = document.getElementById('stockChart');
+                if (canvas && !stockChart) {
+                    setTimeout(initializeChart, 100);
+                }
+            }
+        });
     });
-});
+
+    // Start observing
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 </script>
