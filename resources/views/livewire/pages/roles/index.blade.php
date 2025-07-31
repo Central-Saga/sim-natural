@@ -24,13 +24,15 @@ new class extends Component {
             // Check if role has users
             if ($role->users()->count() > 0) {
                 session()->flash('error', 'Cannot delete role with assigned users.');
+                $this->showDeleteModal = false;
+                $this->roleToDelete = null;
                 return;
             }
 
             $role->delete();
             session()->flash('message', 'Role deleted successfully.');
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to delete role.');
+            session()->flash('error', 'Failed to delete role: ' . $e->getMessage());
         }
 
         $this->showDeleteModal = false;
@@ -39,8 +41,20 @@ new class extends Component {
 
     public function confirmDelete($roleId)
     {
-        $this->roleToDelete = Role::findOrFail($roleId);
-        $this->showDeleteModal = true;
+        try {
+            \Log::info('Confirm delete called for role ID: ' . $roleId);
+            $this->roleToDelete = Role::findOrFail($roleId);
+            $this->showDeleteModal = true;
+        } catch (\Exception $e) {
+            session()->flash('error', 'Role not found.');
+        }
+    }
+
+    public function cancelDelete()
+    {
+        \Log::info('Cancel delete called for role');
+        $this->showDeleteModal = false;
+        $this->roleToDelete = null;
     }
 
     public function updatingSearch()
@@ -254,7 +268,7 @@ new class extends Component {
                                 </svg>
                             </a>
                             @if(!$role->users_count || $role->users_count == 0)
-                            <button wire:click="confirmDelete({{ $role->id }})"
+                            <button wire:click="confirmDelete({{ $role->id }})" type="button"
                                 class="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                 title="{{ __('Delete Role') }}">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -477,8 +491,7 @@ new class extends Component {
 
 <!-- Delete Confirmation Modal -->
 @if($showDeleteModal && $roleToDelete)
-<div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity z-50"
-    wire:click="showDeleteModal = false"></div>
+<div class="fixed inset-0 backdrop-blur-md transition-opacity z-50" wire:click="cancelDelete"></div>
 
 <div class="fixed inset-0 z-50 overflow-y-auto">
     <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
@@ -512,7 +525,7 @@ new class extends Component {
                     class="inline-flex w-full justify-center rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 transition-colors sm:w-auto">
                     {{ __('Delete') }}
                 </button>
-                <button wire:click="showDeleteModal = false" type="button"
+                <button wire:click="cancelDelete" type="button"
                     class="mt-3 inline-flex w-full justify-center rounded-xl bg-gray-100 dark:bg-gray-700 px-4 py-2.5 text-sm font-semibold text-gray-900 dark:text-white shadow-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors sm:mt-0 sm:w-auto">
                     {{ __('Cancel') }}
                 </button>
