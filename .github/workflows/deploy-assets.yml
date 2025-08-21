@@ -1,0 +1,24 @@
+name: Build & Upload Vite assets
+
+on:
+  push:
+    branches: [main] # ganti sesuai branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci
+      - run: npm run build
+      - name: Upload public/build to cPanel via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USER }}
+          password: ${{ secrets.CPANEL_PASS }} # atau key
+          source: "public/build/*"
+          target: "/home/simnatur/repositories/sim-natural/public/build"
+          strip_components: 2
