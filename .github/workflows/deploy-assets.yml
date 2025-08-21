@@ -1,24 +1,45 @@
-name: Build & Upload Vite assets
+name: Build assets & upload to cPanel
 
 on:
   push:
-    branches: [main] # ganti sesuai branch
+    branches: [main] # sesuaikan
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
-      - run: npm ci
-      - run: npm run build
-      - name: Upload public/build to cPanel via SCP
-        uses: appleboy/scp-action@v0.1.7
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 1) Siapkan PHP + Composer lalu install vendor (agar vendor/livewire/flux tersedia)
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          tools: composer:v2
+      - name: Install Composer deps (no-dev)
+        run: composer install --no-dev --prefer-dist --no-progress --no-interaction
+
+      # 2) Build Vite
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - name: Install & build
+        run: |
+          npm ci
+          npm run build
+
+      # 3) Upload hanya hasil build ke server
+      - name: Upload public/build to cPanel
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.CPANEL_HOST }}
           username: ${{ secrets.CPANEL_USER }}
-          password: ${{ secrets.CPANEL_PASS }} # atau key
+          password: ${{ secrets.CPANEL_PASS }} # atau pakai: key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
           source: "public/build/*"
           target: "/home/simnatur/repositories/sim-natural/public/build"
-          strip_components: 2
+          strip_components: 1
