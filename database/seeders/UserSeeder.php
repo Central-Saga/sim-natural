@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
+        $admin = User::updateOrCreate(
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Administrator',
@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
                 'status' => 'active',
             ]
         );
-
+        $admin->assignRole('Admin');
         // $akuntan = User::factory()->create([
         //     'name' => 'Akuntan',
         //     'email' => 'akuntan@example.com',
